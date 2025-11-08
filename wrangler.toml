@@ -1,0 +1,12 @@
+name = "pooladkhay-com"
+compatibility_date = "2025-11-08"
+
+routes = [
+  { pattern = "pooladkhay.com", custom_domain = true }
+]
+
+[assets]
+directory = "./public/"
+
+[build]
+command = 'chmod +x build.sh && ./build.sh'
