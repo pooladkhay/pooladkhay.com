@@ -9,7 +9,7 @@ footer = true
 
 name = "MJ Pooladkhay"
 # id = "pooladkhay.com"
-bio = "computer programmer; interested in virtualisation and system virtual machines; currently working under the title of senior devops engineer."
+bio = "computer programmer; interested in virtualization and system virtual machines; currently working under the title of senior devops engineer."
 avatar = "img/avatar.webp"
 
 links = [
