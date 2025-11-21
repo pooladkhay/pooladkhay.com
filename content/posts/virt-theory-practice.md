@@ -2,7 +2,7 @@
 title = "Virtualization: From Popek and Goldberg to Intel VT-x"
 date = 2025-11-20
 updated = 2025-11-20
-draft = true
+draft = false
 
 [taxonomies]
 categories = ["posts"]
@@ -100,9 +100,34 @@ I'm glad you asked! The requirement is that all _Innocuous instructions_ be exec
 
 If a machine satisfies these rules, we can build an _efficient_ VMM such that guests run in an _essentially identical_ environment to the host while the VMM maintains _control over the system resources_.
 
-## The issue with Intel architecture
+## x86 is in trouble!
 
-## Enter Intel VT-x
+As you might have already guessed, the x86 instruction set architecture of the Intel Pentium processor contained 18 instructions that were sensitive but not privileged [^5]. As a result, it was not possible to build an efficient VMM for it.
+
+### Sensitive register instructions
+
+[more details]
+
+Read or change sensitive registers or memory locations such as a clock register or interrupt registers:
+
+- [`SGDT`](https://www.felixcloutier.com/x86/sgdt), [`SIDT`](https://www.felixcloutier.com/x86/sidt), [`SLDT`](https://www.felixcloutier.com/x86/sldt)
+- [`SMSW`](https://www.felixcloutier.com/x86/smsw)
+- [`PUSHF`](https://www.felixcloutier.com/x86/pushf:pushfd:pushfq), [`POPF`](https://www.felixcloutier.com/x86/popf:popfd:popfq)
+
+### Protection system instructions
+
+[more details]
+
+Reference the storage protection system, memory or address relocation system:
+
+- [`LAR`](https://www.felixcloutier.com/x86/lar), [`LSL`](https://www.felixcloutier.com/x86/lsl), [`VERR`](https://www.felixcloutier.com/x86/verr:verw), [`VERW`](https://www.felixcloutier.com/x86/verr:verw)
+- [`POP`](https://www.felixcloutier.com/x86/pop)
+- [`PUSH`](https://www.felixcloutier.com/x86/push)
+- [`CALL`](https://www.felixcloutier.com/x86/call) (far variant), [`JMP`](https://www.felixcloutier.com/x86/jmp) (far variant), [`RET`](https://www.felixcloutier.com/x86/ret) (far variant), [`INT n`](https://www.felixcloutier.com/x86/intn:into:int3:int1)
+- [`STR`](https://www.felixcloutier.com/x86/str)
+- [`MOV`](https://www.felixcloutier.com/x86/mov) (segment registers)
+
+## Enter VT-x extension
 
 ---
 
@@ -113,3 +138,5 @@ If a machine satisfies these rules, we can build an _efficient_ VMM such that gu
 [^3]: When a trap happens, the processor automatically saves the current state of the machine and passes the control to a pre-specified routine by changing the processor mode, the relocation-bounds register, and the program counter.
 
 [^4]: I say classic because some machines, like the PDP-10, are not classically virtualizable. However, based on Popek and Goldberg’s second theorem, a hybrid virtual machine monitor (HVM) can still be constructed for them under another set of constraints which are beyond the scope of this post.
+
+[^5]: ["Analysis of the Intel Pentium's Ability to Support a Secure Virtual Machine Monitor"](http://www.usenix.org/events/sec2000/robin.html) by John Scott Robin and Cynthia E. Irvine.
