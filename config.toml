@@ -54,8 +54,8 @@ force_theme = false # false | "light" | "dark"
 footer_copyright = "© 2025 MJ Pooladkhay"
 footer_credits = false # Whether to show "Built with zola and serene" in footer
 
-not_found_error_text = "110010100 - Not Found"
-not_found_recover_text = "« home »"
+not_found_error_text = "110010100 - not found"
+not_found_recover_text = "← back home"
 
 reaction = false # Whether to enable anonymous emoji reactions (Note: You need to set up a working api endpoint to enable this feature)
 reaction_align = "right" # "left" | "center" | "right"
