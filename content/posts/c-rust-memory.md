@@ -1,5 +1,5 @@
 +++
-title = "It’s all about memory"
+title = "it’s all about memory"
 date= 2024-06-28
 # updated = 2025-01-01
 draft = false

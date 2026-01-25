@@ -1,5 +1,5 @@
 +++
-title = "Virtualization: Theory to Silicon"
+title = "virtualization: theory to silicon"
 date = 2025-11-20
 updated = 2025-12-26
 draft = false

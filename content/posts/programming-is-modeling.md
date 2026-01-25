@@ -1,5 +1,5 @@
 +++
-title = "Programming is modeling - An experience report"
+title = "programming is modeling - an experience report"
 date = 2024-07-11
 # updated = 2025-01-01
 draft = false
