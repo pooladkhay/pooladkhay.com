@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 
-ZOLA_VERSION='0.21.0'
+ZOLA_VERSION='0.22.1'
 
 echo "Installing Zola ${ZOLA_VERSION}..."
 
