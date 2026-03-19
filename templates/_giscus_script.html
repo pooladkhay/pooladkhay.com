@@ -2,8 +2,7 @@
 <script>
     (function () {
         const theme = sessionStorage.getItem('theme') || (window.matchMedia("(prefers-color-scheme: dark)").matches ? 'dark' : 'light');
-        const giscusTheme = `https://pooladkhay.com/giscus_${theme}.css`;
-        console.log(giscusTheme);
+        const giscusTheme = `${window.location.origin}/giscus_${theme}.css`;
         const script = document.createElement('script');
         script.src = "https://giscus.app/client.js";
         script.setAttribute("data-repo", "pooladkhay/pooladkhay.com");
