@@ -1,7 +1,7 @@
 +++
 title = "my first patch to the linux kernel"
 date = 2026-03-19
-updated = 2026-03-19
+updated = 2026-03-22
 draft = false
 
 [taxonomies]
@@ -31,6 +31,8 @@ How a sign-extension bug in C made me pull my hair out for days but became my fi
 A while ago, I started dipping my toe into virtualization. It's a topic that many people have heard of or are using on a daily basis but a few know and think about how it works under the hood.
 
 I like to learn by reinventing the wheel, and naturally, to learn virtualization I started by trying to build a [Type-2 hypervisor](https://en.wikipedia.org/wiki/Hypervisor#Classification). This approach is similar to how [KVM](https://en.wikipedia.org/wiki/Kernel-based_Virtual_Machine) (Linux) or [bhyve](https://en.wikipedia.org/wiki/Bhyve) (FreeBSD) are built.
+
+My experimental hypervisor (and VMM) is still a work-in-progress and is available on my Github: [pooladkhay/evmm](https://github.com/pooladkhay/evmm).
 
 Since virtualization is hardware assisted these days [^1], the hypervisor needs to communicate directly with the CPU by running certain privileged instructions; which means a Type-2 hypervisor is essentially a [Kernel Module](https://en.wikipedia.org/wiki/Loadable_kernel_module) that exposes an API [^2] to the user-space where a Virtual Machine Monitor (VMM) [^3] like [QEMU](https://www.qemu.org/) or [Firecracker](https://firecracker-microvm.github.io/) is running and orchestrating VMs by utilizing that API.
 
