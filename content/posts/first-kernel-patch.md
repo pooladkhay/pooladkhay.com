@@ -1,7 +1,7 @@
 +++
 title = "my first patch to the linux kernel"
 date = 2026-03-19
-updated = 2026-03-22
+updated = 2026-03-23
 draft = false
 
 [taxonomies]
@@ -219,9 +219,9 @@ Finally, this is the patch I sent, which was approved and merged:<br>
 
 ## Outro
 
-I can't finish this post without talking about AI!
+I would say the main takeaway is to never trust any code. Kernel developers are also human (at least for now) which leads me to a quick note on AI!
 
-You may wonder whether I tried asking an LLM for help or not. Well, I did. In fact it was very helpful in some tasks like summarizing kernel logs [^13] and extracting the gist of them. But when it came to debugging based on all the clues that were available, it concluded that my code didn't have any bugs, and that the CPU hardware was faulty.
+You may wonder whether I tried asking an LLM for help or not. Well, I did. In fact it was very helpful in some tasks like summarizing kernel logs and extracting the gist of them. But when it came to debugging based on all the clues that were available, it concluded that my code didn't have any bugs, and that the CPU hardware was faulty.
 
 CASE CLOSED.
 
