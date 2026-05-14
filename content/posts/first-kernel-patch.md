@@ -1,7 +1,7 @@
 +++
 title = "my first patch to the linux kernel"
 date = 2026-03-19
-updated = 2026-03-23
+updated = 2026-05-14
 draft = false
 
 [taxonomies]
@@ -22,7 +22,7 @@ truncate_summary = false
 featured = false
 +++
 
-How a sign-extension bug in C made me pull my hair out for days but became my first patch to the Linux kernel!
+How an undefined behavior in C made me pull my hair out for days but became my first patch to the Linux kernel!
 
 <!-- more -->
 
@@ -84,7 +84,9 @@ To set these values, I ["borrowed"](https://elixir.bootlin.com/linux/v6.19.8/sou
 vmwrite(HOST_TR_BASE,
 		get_desc64_base((struct desc64 *)(get_gdt().address + get_tr())));
 ```
+
 This piece of code does the following:
+
 - Gets the address of GDT.
 - Indexes into it using the value of TR register.
 - Parses the TSS segment descriptor and extracts the memory address of TSS.
@@ -112,11 +114,11 @@ And BOOM!
 
 Seconds after running the loop, the system crashed, in a very unpredictable way. I was logging the core switches and didn't find any meaningful correlation between the last core number and the crash. Additionally, sometimes it would last longer and sometimes it was immediate. After investigating kernel logs a few times, I saw a pattern in the sequence of events that caused the system to eventually hang:
 
-* The Fatal VM-Exit: An NMI triggered a VM-Exit on CPU 5 and naturally the hardware tried to locate a valid kernel stack from TSS to handle the privilege transition.
-* Core Death: CPU 5 hit a fatal Page Fault attempting to read an unmapped memory address, resulting in a [Kernel Oops](https://en.wikipedia.org/wiki/Linux_kernel_oops). CPU 5 was left completely paralyzed with interrupts disabled.
-* IPI Lockup: CPU 6 attempted a routine system-wide update (kernel text patching) requiring an [Inter-Processor Interrupt (IPI)](https://en.wikipedia.org/wiki/Inter-processor_interrupt) acknowledgment from all cores. CPU 6 became permanently stuck in an infinite loop waiting for the dead CPU 5 to respond.
-* Cascading Paralysis: As other cores (3, 8, 11, etc.) attempted standard cross-core communications (like memory map TLB flushes and RCU synchronizations), they too fell into the IPI trap, waiting indefinitely for CPU 5.
-* Terminal State: The RCU subsystem starved, peripheral drivers (like Wi-Fi) crashed from timeouts, and the system entered a total, unrecoverable deadlock.
+- The Fatal VM-Exit: An NMI triggered a VM-Exit on CPU 5 and naturally the hardware tried to locate a valid kernel stack from TSS to handle the privilege transition.
+- Core Death: CPU 5 hit a fatal Page Fault attempting to read an unmapped memory address, resulting in a [Kernel Oops](https://en.wikipedia.org/wiki/Linux_kernel_oops). CPU 5 was left completely paralyzed with interrupts disabled.
+- IPI Lockup: CPU 6 attempted a routine system-wide update (kernel text patching) requiring an [Inter-Processor Interrupt (IPI)](https://en.wikipedia.org/wiki/Inter-processor_interrupt) acknowledgment from all cores. CPU 6 became permanently stuck in an infinite loop waiting for the dead CPU 5 to respond.
+- Cascading Paralysis: As other cores (3, 8, 11, etc.) attempted standard cross-core communications (like memory map TLB flushes and RCU synchronizations), they too fell into the IPI trap, waiting indefinitely for CPU 5.
+- Terminal State: The RCU subsystem starved, peripheral drivers (like Wi-Fi) crashed from timeouts, and the system entered a total, unrecoverable deadlock.
 
 So why no triple faults?!
 
@@ -158,7 +160,7 @@ static inline uint64_t get_desc64_base(const struct desc64 *desc)
 }
 ```
 
-TSS segment descriptor has four fields that must be stitched together to form the address of the TSS [^11]. 
+TSS segment descriptor has four fields that must be stitched together to form the address of the TSS [^11].
 
 - `base0` is `uint16_t`.
 - `base1` is `uint8_t`.
@@ -171,7 +173,8 @@ The C standard [^12] dictates Integer Promotion. Whenever a type smaller than an
 If an `int` can represent all values of the original type (as restricted by the width, for a bit-field), the value is converted to an `int`; otherwise, it is converted to an `unsigned int`. These are called the integer promotions. All other types are unchanged by the integer promotions.
 {% end %}
 
-This promotion has a consequence: if the resulting value after promotion has a `1` in its most significant bit (32nd bit), this value considered negative by the compiler and if casted to a larger type like a `uint64_t` in our case, sign extension happens.
+This promotion has a consequence: (see the [Update](#update) section)<br>
+~if the resulting value after promotion has a `1` in its most significant bit (32nd bit), this value considered negative by the compiler and if casted to a larger type like a `uint64_t` in our case, sign extension happens.~
 
 Lets see an example:
 
@@ -225,6 +228,24 @@ You may wonder whether I tried asking an LLM for help or not. Well, I did. In fa
 
 CASE CLOSED.
 
+## Update
+
+After this post made its way to [Hacker News](https://news.ycombinator.com/item?id=47444909), `fonheponho` pointed out a crucial flaw in my root cause analysis.
+
+While the patch correctly fixes the bug, I blamed the wrong part of the C standard for the crash. The issue isn't "sign extension" during the cast to `uint64_t` [^13]. The real issue is an [Undefined Behavior (UB)](https://en.wikipedia.org/wiki/Undefined_behavior) triggered by an invalid bitwise left-shift, one step earlier.
+
+Here is the correct sequence of events:
+
+1. **Integer promotion**: Just as I mentioned, `desc->base2` (a `uint8_t`) is promoted to a signed `int`, because `int` can represent all values of an 8-bit unsigned integer.
+
+2. **The illegal shift**: The C standard's rules for `E1 << E2` state that if `E1` has a signed type and a non-negative value, the result is valid only if $E1 \times 2^{E2}$ is representable in the result type. If it isn't (as is the case when we shift a `1` into the sign bit of a 32-bit `int`) the behavior is undefined. The UB happens here, inside the shift itself, before any cast occurs.
+
+3. **The manifestation**: With UB already invoked, the C standard makes no guarantees about what follows. The "sign extension" I described, where the upper 32 bits become all `1`s during the subsequent cast to `uint64_t`, is simply what GCC on x86 produces, probably because the underlying `SHL` instruction naturally yields that bit pattern and the compiler inserts no special handling. A different compiler, or even a different optimization level, could have produced something else entirely.
+
+The fix remains exactly the same: casting `desc->base2` to `uint64_t` before the shift forces the operation onto an unsigned 64-bit integer, where the shift is well-defined and no bits are lost.
+
+Thanks to the HN community for keeping me technically honest!
+
 ---
 
 [^1]: Check out my previous post for more details: [virtualization: theory to silicon](https://pooladkhay.com/posts/virt-theory-silicon/)
@@ -252,3 +273,5 @@ Well, these design decisions were made back in the 80s where memory was scarce, 
 [^11]: Another remnant of old hardware design that is kept for backward compatibility purposes, but "WTF Intel?!" indeed.
 
 [^12]: [https://www.open-std.org/JTC1/SC22/WG14/www/docs/n1570.pdf](https://www.open-std.org/JTC1/SC22/WG14/www/docs/n1570.pdf)
+
+[^13]: Sign-extension is an ISA concept, not a C one.
