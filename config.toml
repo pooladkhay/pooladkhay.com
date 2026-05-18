@@ -5,10 +5,10 @@ default_language = "en"
 theme = "serene"
 output_dir = "public"
 compile_sass = true
-minify_html = false # Keep this false, as it may cause issues with some styles
+minify_html = true # Keep this false, as it may cause issues with some styles
 build_search_index = false # Keep this false, search is temporarily unsupported
 generate_feeds = true # Whether to generate a feed file in root, read docs for more info about rss feed
-feed_filenames = ["feed.xml"] # "feed.xml" | "atom.xml" | "rss.xml", read docs for more info
+feed_filenames = ["feed.xml", "rss.xml"] # "feed.xml" | "atom.xml" | "rss.xml", read docs for more info
 taxonomies = [{ name = "tags" }, { name = "categories" }]
 
 [markdown]
