@@ -33,17 +33,27 @@ anchors = "on"
 
 [extra]
 
-sections = [
-  { name = "posts", path = "/posts", is_external = false },
-  { name = "tags", path = "/tags", is_external = false },
-  # { name = "about", path = "/about", is_external = false },
+nav = [
+  { name = "posts", path = "/posts" },
+  { name = "tags", path = "/tags" },
+  # { name = "about", path = "/about" },
+]
+
+# Your info on the home page
+name = "MJ Pooladkhay"
+# handle = "pooladkhay.com"
+bio = "computer programmer; interested in virtualization and the hardware/software boundary."
+avatar = "img/avatar.webp"
+links = [
+  { name = "GitHub", icon = "github", url = "https://github.com/pooladkhay" },
+  { name = "Email", icon = "email", url = "mailto:mj@pooladkhay.com" },
 ]
 blog_section_path = "/posts"
 
 back_link_text = "Back" # Text of the back button
-force_theme = false # false | "light" | "dark"
+color_scheme = "auto" # "auto" | "light" | "dark"
 
-footer_copyright = "© 2025 MJ Pooladkhay"
+footer_copyright = "© 2024–2026 MJ Pooladkhay"
 footer_credits = false # Whether to show "Built with zola and serene" in footer
 
 not_found_error_text = "110010100 - not found"
@@ -52,8 +62,3 @@ not_found_recover_text = "← back home"
 reaction = false # Whether to enable anonymous emoji reactions (Note: You need to set up a working api endpoint to enable this feature)
 reaction_align = "right" # "left" | "center" | "right"
 reaction_endpoint = "https://example.com/api/reaction"
-
-display_id = false      # Whether to display your id on homepage
-blog_categorized = true # Whether to categorize blog posts
-blur_effect = true      # Whether to turn on blur effect on navigation bar
-back_to_top = true      # Whether to show back-to-top button on post pages

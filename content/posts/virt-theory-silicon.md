@@ -12,7 +12,7 @@ tags= ["virtualization", "intel vt-x", "paper"]
 lang = "en"
 toc = true
 comment = true
-copy = true
+code_copy = true
 math = true
 mermaid = false
 outdate_alert = false
@@ -31,9 +31,9 @@ A description of the modern virtualization; starting from Popek and Goldberg and
 It's not a stretch to claim that virtualization is the technology that makes the modern digital world possible!<br>
 According to [Wikipedia](https://en.wikipedia.org/wiki/Virtualization):
 
-{% quote() %}
+{% <quote cite=""> %}
 Virtualization (abbreviated v12n) is a series of technologies that allows dividing of physical computing resources into a series of virtual machines, operating systems, processes or containers.
-{% end %}
+{% </quote> %}
 
 Unless you are reading a printed copy of this post, you are already using and benefiting from some form of virtualization. The operating system on your device virtualizes CPU and memory, making them available to processes like your web browser and giving each the illusion that it owns and controls the entire hardware. This abstraction also isolates processes so they cannot interfere with one another.
 
@@ -57,9 +57,9 @@ This allowed a great number of simultaneous users to share a single physical S/3
 Now we are in this era where some systems support virtualization natively and some don't. For a few organizations - the U.S. Air Force and the Atomic Energy Commission to be more specific - this was of high importance which was why they were funding research to find a new, verifiable way to build secure systems.
 
 In 1974 Gerald J. Popek and Robert P. Goldberg published a [seminal paper](https://dl.acm.org/doi/10.1145/361011.361073) on _Formal Requirements for Virtualizable Third Generation [^2] Architectures_, with this abstract:
-{% quote(cite="Gerald J. Popek and Robert P. Goldberg") %}
+{% <quote cite="Gerald J. Popek and Robert P. Goldberg"> %}
 Virtual machine systems have been implemented on a limited number of third generation computer systems, e.g. CP-67 on the IBM 360/67. From previous empirical studies, it is known that certain third generation computer systems, e.g. the DEC PDP-10, cannot support a virtual machine system. In this paper, model of a third-generation-like computer system is developed. Formal techniques are used to derive precise sufficient conditions to test whether such an architecture can support virtual machines.
-{% end %}
+{% </quote> %}
 
 ## Theory
 
@@ -103,9 +103,9 @@ This categorization helps with reasoning about the effect(s) of executing a give
 
 Now that we are familiar with the model of the machine and various types of instructions, we are ready to get to the actual requirement for virtualization:
 
-{% quote(cite="Theorem 1") %}
+{% <quote cite="Theorem 1"> %}
 For any conventional third generation computer, a virtual machine monitor (VMM) may be constructed if the set of sensitive instructions for that computer is a subset of the set of privileged instructions.
-{% end %}
+{% </quote> %}
 
 Intuitively, this means that we can build and run a classic VMM [^5] on any machine where all sensitive instructions are privileged, i.e. executing them would trap and transfer control back to the VMM.<br>
 This simple but foundational rule ensures that guests cannot access or modify the state of the VMM or other guests on the machine, and are bound to the resources that were specifically allocated to them.

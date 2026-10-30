@@ -12,7 +12,7 @@ tags= ["linux", "kvm", "virtualization", "intel vt-x"]
 lang = "en"
 toc = true
 comment = true
-copy = true
+code_copy = true
 math = true
 mermaid = false
 outdate_alert = false
@@ -82,7 +82,7 @@ To set these values, I ["borrowed"](https://elixir.bootlin.com/linux/v6.19.8/sou
 
 ```C
 vmwrite(HOST_TR_BASE,
-		get_desc64_base((struct desc64 *)(get_gdt().address + get_tr())));
+  get_desc64_base((struct desc64 *)(get_gdt().address + get_tr())));
 ```
 
 This piece of code does the following:
@@ -156,7 +156,7 @@ Remember that piece of code I took from the kernel source. It used the `get_desc
 static inline uint64_t get_desc64_base(const struct desc64 *desc)
 {
     return ((uint64_t)desc->base3 << 32) |
-		(desc->base0 | ((desc->base1) << 16) | ((desc->base2) << 24));
+  (desc->base0 | ((desc->base1) << 16) | ((desc->base2) << 24));
 }
 ```
 
@@ -169,9 +169,9 @@ TSS segment descriptor has four fields that must be stitched together to form th
 
 The C standard [^12] dictates Integer Promotion. Whenever a type smaller than an `int` is used in an expression, the compiler automatically promotes it to a standard `int` (which is a 32-bit signed integer on modern x86-64 architectures) before performing the operation.
 
-{% quote(cite="Section 6.3.1.1") %}
+{% <quote cite="Section 6.3.1.1"> %}
 If an `int` can represent all values of the original type (as restricted by the width, for a bit-field), the value is converted to an `int`; otherwise, it is converted to an `unsigned int`. These are called the integer promotions. All other types are unchanged by the integer promotions.
-{% end %}
+{% </quote> %}
 
 This promotion has a consequence: (see the [Update](#update) section)<br>
 ~if the resulting value after promotion has a `1` in its most significant bit (32nd bit), this value considered negative by the compiler and if casted to a larger type like a `uint64_t` in our case, sign extension happens.~

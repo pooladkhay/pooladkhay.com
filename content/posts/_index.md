@@ -2,7 +2,7 @@
 title = "Blog - MJ Pooladkhay"
 description = "Where I write about topics that interest me."
 sort_by = "date"
-template = "blog.html"
+template = "posts.html"
 page_template = "post.html"
 insert_anchor_links = "right"
 generate_feeds = false
@@ -15,7 +15,7 @@ categorized = false
 back_to_top = true
 toc = true
 comment = false
-copy = true
+code_copy = true
 
 # outdate_alert = false
 # outdate_alert_days = 12

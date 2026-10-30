@@ -12,9 +12,7 @@ draft = true
 
 math = false
 mermaid = false
-copy = false
+code_copy = false
 comment = false
 reaction = false
 +++
-
-Hello! I'm Mohammad Javad (MJ) Pooladkhay.

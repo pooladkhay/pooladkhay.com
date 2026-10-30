@@ -1,9 +1,7 @@
 name = "pooladkhay-com"
 compatibility_date = "2025-11-08"
 
-routes = [
-  { pattern = "pooladkhay.com", custom_domain = true }
-]
+routes = [{ pattern = "pooladkhay.com", custom_domain = true }]
 
 [assets]
 directory = "./public/"
